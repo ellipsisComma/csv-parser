@@ -50,11 +50,11 @@ In RFC-4180, the entire table can optionally end with a newline. However, in a s
 
 ## Instantiation
 
-The module exports one class, `parser`, which can be instantiated with or without an object containing options for customising the parser.
+The module exports one class, `CSVParser`, which can be instantiated with or without an object containing options for customising the parser.
 
 ```js
 import {
-	parser as csvParser,
+	parser as CSVParser,
 } from "csv-parser.js";
 
 const parser = new csvParser();
