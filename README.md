@@ -121,10 +121,10 @@ parser.parse(`a,b,c
 1,2,3`);
 /*
 	outputs
-		[
-			["a", "b", "c"],
-			["1", "2", "3"],
-		]
+	[
+		["a", "b", "c"],
+		["1", "2", "3"],
+	]
 */
 ```
 
@@ -151,8 +151,8 @@ parser.stringify([
 ]);
 /*
 	outputs
-		'a,b
-		entry,"entry, with comma"'
+	'a,b
+	entry,"entry, with comma"'
 */
 ```
 
@@ -174,16 +174,14 @@ parser.stringifyField("comma, separated, text");
 
 ### Why not parse CSV into an array of objects?
 
-It'd be a lot neater to output an array of objects, where the column headers are the keys, instead of an array of arrays, where the column headers are the first sub-array. That way, you could get columns directly by name while iterating over rows, instead of having to iterate over column indices to get the matching field from the headers row.
+It might be neater to output an array of objects, where the column headers are the keys, instead of an array of arrays, where the column headers are the first sub-array. That way, you could get columns directly by name while iterating over rows, instead of having to iterate over column indices to get the matching field from the headers row.
 
-Unfortunately, CSV headers are optional, and the parser becomes increasingly unwieldy if it has to account for parsing to arrays *and* to objects (and all the validation that requires, and the fact that multiple columns can share the same name in CSV and in the array-of-arrays but not in the array-of-objects because objects can't have duplicate keys...).
+Unfortunately, CSV headers are optional, and the parser becomes increasingly unwieldy if it has to account for parsing to arrays *and* to objects (and all the validation that requires, and the fact that multiple columns can share the same name in CSV and in the array-of-arrays but not in the array-of-objects, because objects can't have duplicate keys…).
+
+It's simpler to just parse all rows the same way and leave processing to individual users, who may have individual requirements for data processing or may be comfortable using the array-of-arrays output.
 
 ### Why not implement find/filter in the parser?
 
 There's something neat about the idea of inputting a CSV and a find- or filter-style callback, and getting out just the arrays for the found/filtered row(s).
 
 However, either your CSV's small enough that you get no real performance boost vs parsing *all* the data and using native JS array methods, *or* your CSV's so big it should be a proper database instead. Rather than half-assing everything, it's better if the class does one thing well and leaves other tasks to other classes.
-
-### Why not use an iterator or generator in the parser?
-
-The parser might theoretically be better in some way if it output an iterator of iterators instead of an array of arrays, but I think those advantages would be outweighed by the disadvantages of not being able to call array methods like `.filter()` and not being able to iterate over rows without destroying them.
