@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en-GB" dir="auto">
+<head>
+	<meta charset="UTF-8">
+
+	<title>CSV parser demo</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style>
+	*,
+	::before,
+	::after {
+		box-sizing: border-box;
+	}
+	body {
+		line-height: 1.5;
+		font-size: 1.2rem;
+		font-family: sans-serif;
+	}
+	ul {
+		gap: 1rem;
+		margin-inline: auto;
+		padding-inline-start: 0;
+		list-style-type: "";
+		@media (min-width: 650px) {
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+		}
+	}
+	textarea {
+		width: 100%;
+		display: block;
+		resize: none;
+		tab-size: 4ch;
+	}
+	main {
+		max-width: 80ch;
+		margin-inline: auto;
+		padding-inline: 10px;
+	}
+	</style>
+</head>
+
+
+
+<body>
+<main>
+	<h1><abbr>CSV</abbr> parser</h1>
+	<p>This demo parser uses the standard <abbr>CSV</abbr> delimiter (the comma) and escaper (the double-quote). The parser follows <a href="https://www.ietf.org/rfc/rfc4180.txt">RFC 4180</a>, the closest thing <abbr>CSV</abbr> has to a standard.</p>
+	<form id="demo">
+		<label for="csv-field">CSV</label>
+		<textarea id="csv-field" rows="8"></textarea><!--#csv-field end-->
+		<ul>
+			<li><button id="csv-to-data-button" type="button">Parse <abbr>CSV</abbr></button></li>
+			<li><button id="data-to-csv-button" type="button">Stringify data</button></li>
+		</ul>
+		<ul>
+			<li><button id="load-simple-demo-button" type="button">Load simple <abbr>CSV</abbr> demo</button></li>
+			<li><button id="load-complex-demo-button" type="button">Load complex <abbr>CSV</abbr> demo</button></li>
+		</ul>
+		<label for="data-field">Data</label>
+		<textarea id="data-field" rows="8"></textarea><!--#data-field end-->
+	</form><!--#demo end-->
+</main>
+
+
+
+<script type="module">
+import {
+	CSVParser,
+} from "./parser.js?v=2025-04-08";
+
+const DemoCSVParser = new CSVParser();
+
+// parsing (and heading modifiers, if parsing CSV to Data)
+document.getElementById(`csv-to-data-button`).addEventListener(`click`, () => {
+	document.getElementById(`data-field`).value = JSON.stringify(DemoCSVParser.parse(document.getElementById(`csv-field`).value));
+});
+document.getElementById(`data-to-csv-button`).addEventListener(`click`, () => {
+	let data;
+	try {
+		if (document.getElementById(`data-field`).value === ``) {
+			document.getElementById(`csv-field`).value = ``;
+		} else {
+			data = JSON.parse(document.getElementById(`data-field`).value);
+		}
+	} catch (error) {
+		console.error(`Input data must be valid JSON consisting of an array of arrays.`);
+		return;
+	}
+
+	document.getElementById(`csv-field`).value = DemoCSVParser.stringify(data);
+});
+
+// load demo CSVs (simple = no problemo, complex = many field values and escapes)
+document.getElementById(`load-simple-demo-button`).addEventListener(`click`, () => {
+	document.getElementById(`csv-field`).value = `a,b,c
+1,2,3
+4,5,6
+7,8,9`;
+});
+document.getElementById(`load-complex-demo-button`).addEventListener(`click`, () => {
+	document.getElementById(`csv-field`).value = `a,"b","c""c","""",,"f,f","g
+g","","i,
+""
+i"
+1,2,3,4,5,6,7,8,9`;
+});
+
+// reset all inputs on reload
+document.getElementById(`demo`).reset();
+</script>
+</body>
+</html>
