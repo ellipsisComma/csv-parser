@@ -172,13 +172,13 @@ parser.stringifyField("comma, separated, text");
 
 ## Rejected features
 
-### Why not parse CSV into an array of objects?
+### Why not parse CSV into an array of objects or vice versa?
 
-It might be neater to output an array of objects, where the column headers are the keys, instead of an array of arrays, where the column headers are the first sub-array. That way, you could get columns directly by name while iterating over rows, instead of having to iterate over column indices to get the matching field from the headers row.
+It might be neater to input or output an array of objects, where the column headers are the keys, instead of an array of arrays, where the column headers are the first sub-array. That way, you could get columns directly by name while iterating over rows, instead of having to iterate over column indices to get the matching field from the headers row.
 
-Unfortunately, CSV headers are optional, and the parser becomes increasingly unwieldy if it has to account for parsing to arrays *and* to objects (and all the validation that requires, and the fact that multiple columns can share the same name in CSV and in the array-of-arrays but not in the array-of-objects, because objects can't have duplicate keys…).
+Unfortunately, converting to or from an array of objects is much more complex than converting to an array of row-arrays due to the differences between hashes and CSV strings and the quirks of the CSV format. For example: CSV headers are optional; a CSV file can contain multiple identical headers, while a hash can't have multiple identical keys; higher-order JS variables like arrays and objects need user-specific processing to be stringified correctly; and so on.
 
-It's simpler to just parse all rows the same way and leave processing to individual users, who may have individual requirements for data processing or may be comfortable using the array-of-arrays output.
+It's far simpler to just parse all rows the same way and leave processing to individual users, who know best how to fulfil their own requirements, which may be significantly more complex .
 
 ### Why not implement find/filter in the parser?
 
