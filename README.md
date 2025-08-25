@@ -110,7 +110,40 @@ const parser2 = new csvParser({
 */
 ```
 
-## Methods
+## Static methods
+
+### `.objectify(headers, data)`
+
+Takes an array of string headers/keys and an array of arrays of any data and returns the data mapped to an array of objects where each key is a header and each value is the data item at the same index.
+
+Put simply, this allows you to convert the output of the public method `.parse()` into an array of objects, which makes for more readable code by allowing you to refer to values by key instead of index.
+
+```js
+CSVParser.objectify(
+	[ "a", "b", "c" ],
+	[
+		[ 1, 2, 3 ],
+		[ 4, 5, 6 ],
+	]
+);
+/*
+	outputs
+	[
+		{
+			"a": 1,
+			"b": 2,
+			"c": 3,
+		},
+		{
+			"a": 4,
+			"b": 5,
+			"c": 6,
+		},
+	]
+*/
+```
+
+## Public methods
 
 ### `.parse(csv)`
 
@@ -122,8 +155,8 @@ parser.parse(`a,b,c
 /*
 	outputs
 	[
-		["a", "b", "c"],
-		["1", "2", "3"],
+		[ "a", "b", "c" ],
+		[ "1", "2", "3" ],
 	]
 */
 ```
