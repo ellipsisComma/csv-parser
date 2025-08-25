@@ -11,6 +11,9 @@ function verbose(strings, ...subs) {
 /*
 CSV/DSV parser
 
+static methods:
+	objectify
+
 public methods:
 	parse
 	parseHeaders
@@ -18,6 +21,29 @@ public methods:
 	stringifyField
 */
 class CSVParser {
+	// map outputs of parser.parse() to an array of objects
+	static objectify(headers, data) {
+		// guards
+		if (!Array.isArray(headers) || !headers.every(header => typeof header === `string`)) {
+			console.error(`headers submitted to CSVParser.objectify() must be an array of strings`);
+			return;
+		}
+		if (!Array.isArray(data) || !data.every(Array.isArray)) {
+			console.error(`data submitted to CSVParser.objectify() must be an array of arrays`);
+			return;
+		}
+		if (data.some(item => item.length !== headers.length)) {
+			console.error(`All data submitted to CSVParser.objectify() must have an equal number of fields to the headers array`);
+			return;
+		}
+
+		return data.map(item => {
+			const obj = {};
+			for (let i = 0; i < headers.length; i++) obj[headers[i]] = item[i];
+			return obj;
+		});
+	}
+
 	#delimiter;
 	#escaper;
 	#unescapedField;
