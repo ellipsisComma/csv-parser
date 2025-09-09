@@ -108,6 +108,20 @@ These make safely escaping the parser regex a pain in the ass.`;
 		this.#stringifyNullUndef = !!stringifyNullUndef;
 	}
 
+	get delimiter() {
+		return this.#delimiter;
+	}
+
+	get escaper() {
+		return this.#escaper;
+	}
+
+	get options() {
+		return {
+			"stringifyNullUndef": this.#stringifyNullUndef,
+		};
+	}
+
 	/* ------------
 	PARSING INTO JS
 	------------ */
