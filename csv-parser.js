@@ -53,15 +53,15 @@ class CSVParser {
 	#escapeRegex;
 	#stringifyNullUndef;
 
-	constructor (options = {}) {
-		options.delimiter = options.delimiter?.toString() ?? `,`;
-		options.escaper = options.escaper?.toString() ?? `"`;
-
+	constructor ({delimiter = `,`, escaper = `"`, stringifyNullUndef = true} = {}) {
 		// validate special characters
 		for (const [name, ch] of Object.entries({
-			"delimiter": options.delimiter,
-			"escaper": options.escaper,
+			"delimiter": delimiter,
+			"escaper": escaper,
 		})) {
+			if (typeof ch !== `string` || ch.length !== 1) {
+				throw `${name} must be a length-1 string.`;
+			}
 			if (ch === `\n` || ch === `\r`) {
 				throw `${name} must not be newline ("\\n") or carriage return ("\r").
 Newline characters are reserved for delimiting CSV rows.`;
@@ -70,15 +70,12 @@ Newline characters are reserved for delimiting CSV rows.`;
 				throw `${name} must not be backslash ("\\") or right square bracket ("]").
 These make safely escaping the parser regex a pain in the ass.`;
 			}
-			if (ch.length !== 1) {
-				throw `${name} must be a length-1 string.`;
-			}
 		}
-		if (options.delimiter === options.escaper) {
+		if (delimiter === escaper) {
 			throw `delimiter and escaper must not be identical.`;
 		}
-		this.#delimiter = options.delimiter;
-		this.#escaper = options.escaper;
+		this.#delimiter = delimiter;
+		this.#escaper = escaper;
 
 		// prepare various regex patterns
 		this.#unescapedField = String.raw`[^${this.#escaper}${this.#delimiter}\r\n]*`;
@@ -108,8 +105,7 @@ These make safely escaping the parser regex a pain in the ass.`;
 		this.#escapeRegex = new RegExp(String.raw`[\r\n${this.#delimiter}${this.#escaper}]`);
 
 		// process extra
-		options.stringifyNullUndef ??= true;
-		this.#stringifyNullUndef = !!options.stringifyNullUndef;
+		this.#stringifyNullUndef = !!stringifyNullUndef;
 	}
 
 	/* ------------
