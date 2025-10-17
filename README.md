@@ -71,6 +71,7 @@ The constructor takes one argument, an object of options. Any options not includ
 |`delimiter`|`string`, single-character (exceptions below)|`,`|
 |`escaper`|`string`, single-character (exceptions below)|`"`|
 |`stringifyNullUndef`|`boolean`|`true`|
+|`escapeAllFields`|`boolean`|`false`|
 
 The `delimiter` separates CSV fields in the same row.
 
@@ -79,6 +80,8 @@ The `escaper` escapes CSV fields that contain CSV special characters.
 The `delimiter` and `escaper` must be single-character strings, may not both be the same character, and may not be any of the following: newline (`\n`), carriage return (`\r`), backslash (`\`), or right square bracket (`]`). The latter two are invalid because they make building the parser regex a pain in the ass.
 
 `stringifyNullUndef` sets how `null` and `undefined` entries are parsed from JSON to CSV. If true, they'll be converted to string versions (`"null"` and `"undefined"`). If false, they'll be converted to empty strings (`""`).
+
+`escapeAllFields` sets whether all fields in the data will be escaped automatically. If true, all fields will be escaped, even those that don't contain special characters. If false, only fields that contain special characters will be escaped.
 
 Example instantiations:
 

@@ -52,8 +52,9 @@ class CSVParser {
 	#fieldRegex;
 	#escapeRegex;
 	#stringifyNullUndef;
+	#escapeAllFields;
 
-	constructor ({delimiter = `,`, escaper = `"`, stringifyNullUndef = true} = {}) {
+	constructor ({delimiter = `,`, escaper = `"`, stringifyNullUndef = true, escapeAllFields = false} = {}) {
 		// validate special characters
 		for (const [name, ch] of Object.entries({
 			"delimiter": delimiter,
@@ -106,6 +107,7 @@ These make safely escaping the parser regex a pain in the ass.`;
 
 		// process extra
 		this.#stringifyNullUndef = !!stringifyNullUndef;
+		this.#escapeAllFields = !!escapeAllFields;
 	}
 
 	get delimiter() {
@@ -119,6 +121,7 @@ These make safely escaping the parser regex a pain in the ass.`;
 	get options() {
 		return {
 			"stringifyNullUndef": this.#stringifyNullUndef,
+			"escapeAllFields": this.#escapeAllFields,
 		};
 	}
 
@@ -173,9 +176,9 @@ These make safely escaping the parser regex a pain in the ass.`;
 		}
 	}
 
-	/* -------------
-	PARSING INTO CSV
-	------------- */
+	/* ------------------
+	STRINGIFYING INTO CSV
+	------------------ */
 
 	// escape a field string that contains any special characters
 	// String -> String
@@ -198,7 +201,7 @@ These make safely escaping the parser regex a pain in the ass.`;
 
 		const stringifiedField = String(field);
 
-		return this.#escapeRegex.test(stringifiedField)
+		return this.#escapeRegex.test(stringifiedField) || this.#escapeAllFields
 			? this.#escapeField(stringifiedField)
 			: stringifiedField;
 	}
