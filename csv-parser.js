@@ -4,7 +4,7 @@
 // wrap each character in square brackets. for example: // -> [/][/]
 function verbose(strings, ...subs) {
 	return [strings.raw[0], subs.map((sub, i) => sub + strings.raw[i + 1]).join(``)].join(``)
-		.replaceAll(/(?:^|\s)(?:\/\/.*|\/\*[\s\S]*?\*\/)/gm, ``)
+		.replaceAll(/(?:^|\s)(?:\/\/.*|\/\*[\s\S]*?\*\/|\/\*[\s\S]*)/gm, ``)
 		.replaceAll(/^\s+|\s+$|\n|\r/gm, ``);
 }
 
